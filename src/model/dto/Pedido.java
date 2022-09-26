@@ -2,10 +2,12 @@ package model.dto;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Set;
 
 public class Pedido {
 	//propiedades
@@ -14,7 +16,8 @@ public class Pedido {
 	private Cliente cliente;
 
 	//	private float cuantiaTotal;
-	private Map<Articulo,Integer> lineas;
+	private Set<LineaPedido> lineas;
+	private float cuantia = 0;
 	
 	//Setters and Getters
 	public Pedido(int numeroDeSerie, Cliente cliente) {
@@ -22,30 +25,32 @@ public class Pedido {
 		this.numeroDeSerie = numeroDeSerie;
 		this.cliente = cliente;
 		this.fecha=LocalDate.now();
-		lineas=new HashMap<Articulo,Integer>();
+		lineas=new HashSet<LineaPedido>();
 	}
 	
 	//metodos
 	public boolean addArticulo(Articulo articulo, Integer cantidad) {
 		// assert
-		if (!lineas.containsKey(articulo)) {
-			lineas.put(articulo, cantidad);
-			return true;
-		}
-		return false;
+		return lineas.add(new LineaPedido(articulo, cantidad));
+	}
+		
+	public float getCuantiaTotalLambda() {
+		this.cuantia=0;
+		lineas.forEach((linea)->{
+			cuantia+=linea.getCuantiaParcial();
+		});
+		return cuantia-cuantia*this.cliente.getDescuento();
 	}
 	
 	public float getCuantiaTotal() {
 		float cuantia = 0;
-		Iterator<Entry<Articulo, Integer>> iterator = lineas.entrySet().iterator();
+		Iterator<LineaPedido> iterator = lineas.iterator();
 		while (iterator.hasNext()) {
-			Entry<Articulo, Integer> next = iterator.next();
-			cuantia+=getPrecio(next.getKey())*next.getValue();
+			LineaPedido next = iterator.next();
+			cuantia+=next.getCuantiaParcial();
 		}
 		return cuantia=cuantia-cuantia*this.cliente.getDescuento();
 	}
-	
-	
 
 	public boolean equalsCliente(Cliente cliente) {
 		return this.cliente.equals(cliente);
@@ -67,10 +72,7 @@ public class Pedido {
 		return Objects.equals(cliente, other.cliente) && Objects.equals(fecha, other.fecha)
 				&& Objects.equals(lineas, other.lineas) && numeroDeSerie == other.numeroDeSerie;
 	}
-
-	public float getPrecio(Articulo articulo) {
-		return articulo.getPrecio();
-	}
+	
 	public Cliente getCliente() {
 		return cliente;
 	}
@@ -78,6 +80,17 @@ public class Pedido {
 	private void setCliente(Cliente cliente) {
 		this.cliente = cliente;
 	}
+
+	public LocalDate getFecha() {
+		return fecha;
+	}
+
+	public LineaPedido[] getLineasPedido() {
+		return (LineaPedido[]) lineas.toArray();
+		
+	}
+
+	
 
 	
 	

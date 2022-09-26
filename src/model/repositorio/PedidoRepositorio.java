@@ -18,10 +18,20 @@ public class PedidoRepositorio {
 	}
 
 
+	public List<Pedido> findAll(){
+		return pedidos;
+	}
+	
 	public List<Pedido> findPedidosFromClienteBetweenIncialAndEndingDates(Cliente cliente, LocalDate initialDate, LocalDate endingDate) {
 		List<Pedido> listPedido=new ArrayList<>();
 		for (Pedido pedido : pedidos) {
-			if(pedido.equalsCliente(cliente)) {
+			LocalDate fecha = pedido.getFecha();
+			if(
+					pedido.equalsCliente(cliente)
+					&&initialDate.isBefore(fecha)
+					&&endingDate.isAfter(fecha)
+					||initialDate.isEqual(fecha)
+					||endingDate.isEqual(fecha)) {
 				listPedido.add(pedido);
 			};
 		}
