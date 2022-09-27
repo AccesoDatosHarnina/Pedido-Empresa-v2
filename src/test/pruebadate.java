@@ -20,11 +20,13 @@ class pruebadate {
 		LocalDate anterior=LocalDate.of(2020,1,12);
 		LocalDate posterior=LocalDate.of(2022,1,12);
 		for (LocalDate localDate : ahora) {
+			System.out.println(localDate.toString());
 			assertTrue(
-					anterior.isBefore(localDate)
-					&&posterior.isAfter(localDate)
-					||anterior.isEqual(localDate)
-					||posterior.isEqual(localDate));
+					anterior.minusDays(1).isBefore(localDate)
+					&&posterior.plusDays(1).isAfter(localDate)
+//					||anterior.isEqual(localDate)
+//					||posterior.isEqual(localDate)
+					);
 		}
 	}
 

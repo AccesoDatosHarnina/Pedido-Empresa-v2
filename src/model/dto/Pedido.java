@@ -4,8 +4,11 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.Objects;
 import java.util.Set;
 
@@ -85,8 +88,8 @@ public class Pedido {
 		return fecha;
 	}
 
-	public LineaPedido[] getLineasPedido() {
-		return (LineaPedido[]) lineas.toArray();
+	public Set<LineaPedido> getLineasPedido() {
+		return lineas;
 		
 	}
 
