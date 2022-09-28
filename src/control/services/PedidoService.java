@@ -70,14 +70,12 @@ public class PedidoService {
 
 	private ArrayList<Articulo> limitarListTresElementos(List<LineaPedido> lineasContabilidad) {
 		int maxSize = 3;
-		Stream<LineaPedido> limit = lineasContabilidad.stream().sorted((a, b) -> {
-			return a.getCantidad() - b.getCantidad();
-		}).limit(maxSize);
-		ArrayList<Articulo> articulos = new ArrayList<>();
-		limit.forEach((a) -> {
-			articulos.add(a.getArticulo());
-		});
-		return articulos;
+		return (ArrayList<Articulo>) lineasContabilidad.stream()
+				.sorted((a, b) -> {
+					return a.getCantidad() - b.getCantidad();})
+				.limit(maxSize)
+				.map((a)->{return a.getArticulo();})
+				.collect(Collectors.toList());
 	}
 
 	private List<LineaPedido> generateList() {
@@ -87,5 +85,12 @@ public class PedidoService {
 			lineas.add(new LineaPedido(articulo, 0));
 		});
 		return lineas;
+		// con map
+//				int maxSize = 3;
+//				return (ArrayList<Articulo>) lineasContabilidad.stream().sorted((a, b) -> {
+//					return a.getCantidad() - b.getCantidad();
+//				}).limit(maxSize).map((linea)->{
+//					return linea.getArticulo();
+//				}).collect(Collectors.toList());
 	}
 }
